@@ -7,12 +7,7 @@ import Filter from 'components/Filter/Filter';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
     name: '',
     number: '',
@@ -42,6 +37,15 @@ export class App extends Component {
     }));
   };
 
+  // pobieram dane z localStorage zapisane pod kluczem 'contacts', parsuję dane z JSON na obiekt JS i ustawiam te dane jako nowy stan
+  componentDidMount() {
+    this.setState(JSON.parse(localStorage.getItem('contacts')));
+  }
+  // zamieniam aktualny stan komponentu na format JSON i zapisuję go localStorage pod kluczem 'contacts'
+  componentDidUpdate() {
+    localStorage.setItem('contacts', JSON.stringify(this.state));
+  }
+
   showFilteredContacts = () => {
     // destrukturyzacja stanu komponentu App aby otrzymać dostęp do właściwości contacts (tablica kontaktów) i filter (tekst filtrowania)
     const { contacts, filter } = this.state;
@@ -58,6 +62,8 @@ export class App extends Component {
       // metoda filter iteruje przez tablicę prevState.contacts i zwraca nową tablicę spełniającą poniższy waurunek
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
+    // usuwam dane z localStorage
+    localStorage.removeItem('contacts');
   };
 
   handleFilterChange = newValue => {
